@@ -29,10 +29,18 @@ public class Button extends WidgetWithLabel<Button> {
 	// state
 	boolean pressed;
 	
+	static float DEFAULT_BUTTON_W = 5;
+	static float DEFAULT_BUTTON_H = 2;
+
+	public Button(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_BUTTON_W), pui.gridY2Px(DEFAULT_BUTTON_H));
+	}
+	
 	public Button(PUI pui, int width, int height) {
 		super(pui, width, height);
 	}
-	
+
+
 	@Override
 	void draw(PApplet p) {
 		// draw background

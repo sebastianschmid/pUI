@@ -29,7 +29,14 @@ public class Toggle extends WidgetWithLabel<Toggle> {
 	
 	// state
 	boolean pressed;
-			
+
+	static float DEFAULT_TOGGLE_W = 2;
+	static float DEFAULT_TOGGLE_H = 2;
+	
+	public Toggle(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_TOGGLE_W), pui.gridY2Px(DEFAULT_TOGGLE_H));
+	}
+	
 	public Toggle(PUI pui, int width, int height) {
 		super(pui, width, height);
 	}

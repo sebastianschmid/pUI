@@ -39,6 +39,15 @@ public class Label extends Widget<Label> {
 		super(pui, width, height, doLayout);
 	}
 	
+	public Label(PUI pui) {
+		this(pui, 0, pui.gridY2Px(PUI.DEFAULT_FONTSIZE_MEDIUM));
+	}
+	
+	public Label(PUI pui, String _text) {
+		this(pui, 0, pui.gridY2Px(PUI.DEFAULT_FONTSIZE_MEDIUM));
+		this.text(_text);
+	}
+
 	@Override
 	void draw(PApplet p) {
 		// draw background

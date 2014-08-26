@@ -32,6 +32,13 @@ public class ColorPicker extends WidgetWithLabel<ColorPicker> {
 // helpers
 //	int hHeight, sHeight, bHeight; // height of the individual sliders
 	
+	static float DEFAULT_COLORPICKER_W = 11;
+	static float DEFAULT_COLORPICKER_H = 3;
+	
+	public ColorPicker(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_COLORPICKER_W), pui.gridY2Px(DEFAULT_COLORPICKER_H));
+	}
+
 	ColorPicker(PUI pui, int width, int height) {
 		super(pui, width, height);
 		a = 255;
@@ -120,8 +127,8 @@ public class ColorPicker extends WidgetWithLabel<ColorPicker> {
 	void drawGradient(PApplet p, int x, int y, int w, int h, int from, int to, float mark) {
 		// draw w vertical lines (-> gradient)
 		for (int i=0; i<w; i++) {
-			float a = (float)i / (w-1);
-			p.stroke(p.lerpColor(from, to, a));
+			float aa = (float)i / (w-1);
+			p.stroke(p.lerpColor(from, to, aa));
 			p.line(x+i, y, x+i, y+h-1);
 		}
 		// draw mark
@@ -133,8 +140,8 @@ public class ColorPicker extends WidgetWithLabel<ColorPicker> {
 		p.pushStyle();
 		p.colorMode(PApplet.HSB);
 		for (int i=0; i<w; i++) {
-			float a = (float)i / (w-1);
-			p.stroke(a*255, 255, 255);
+			float aa = (float)i / (w-1);
+			p.stroke(255*aa, 255, 255);
 			p.line(x+i, y, x+i, y+h-1);
 		}
 		int underlyingColor = p.color(mark*255, 255, 255);

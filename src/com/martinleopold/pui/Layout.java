@@ -149,7 +149,7 @@ final class Layout {
 	 * @param e
 	 * @return true if widget was removed
 	 */
-	private boolean remove(Widget<?> e) {
+	public boolean remove(Widget<?> e) {
 		int idx = elements.indexOf(e); // index in elements = index of add action
 		if (idx > -1) {
 			elements.remove(e);

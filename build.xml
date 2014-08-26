@@ -1,450 +1,73 @@
-<project name="pUI" default="clean" basedir=".">
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="pUIfork" default="default" basedir=".">
+    <description>Builds, tests, and runs the project pUIfork.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
 
-    
-<!--	
-		Properties for your project should be set and modified in the  
-		build.properties file (located in the same folder as this build.xml file).
-		
-                    THIS FILE SHOULD NOT BE EDITED, unless you know what you are doing.
-                    If you have recommendations for improvements, please let Elie know 
-                    at prisonerjohn@gmail.com
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar:                  JAR building
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="pUIfork-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
     -->
-    
-	
-	<property file="./resources/build.number" />
-    <property file="./resources/build.properties" />
-	
-    <description>
-        ${ant.description}
-    </description>
-    	
-	
-	
-    
-    <property name="line" value="------------------------------------------------------------------------------------------------" />
-	
-    <!-- set the OS properties -->
-    <condition property="is.mac">
-        <os family="mac" />
-    </condition>
-    <condition property="is.windows">
-        <os family="windows" />
-    </condition>
-    <condition property="is.unix">
-        <os family="unix" />
-    </condition>
-	
-    <property name="library.fullVersion" value="${library.prettyVersion} (${library.version})"/>
-    <property name="project.jar.name" value="${project.name}.jar"/>
-    <property name="project.base" location="."/>
-    <property name="project.src" location="src"/>
-    <property name="project.tmp" location="tmp"/>
-    <property name="project.web" location="web"/>
-    <property name="project.data" location="data"/>
-    <property name="project.lib" location="lib"/>
-    <property name="project.bin" location="bin"/>
-	<property name="project.bin.test" location="${project.bin}/test"/>
-	<property name="project.test" location="test"/>
-    <property name="project.bin.data" location="${project.bin}/data"/>
-    <property name="project.examples" location="examples"/>
-    <property name="project.reference" location="reference"/>
-    <property name="project.dist" location="dist"/>
-    <property name="project.dist.version" location="dist/${project.name}-${library.version}"/>
-    <property name="install.source" location="resources/install_instructions.txt"/>
-    <property name="install.destination" location="${project.dist.version}/INSTALL.txt"/>
-    <property name="libprops.source" location="resources/library.properties"/>
-	
-    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
-        <classpath>
-            <pathelement location="./resources/code/ant-contrib-1.0b3.jar"/>
-        </classpath>
-    </taskdef>
-
-
-    <path id="classpath">
-        <fileset dir="${classpath.local.location}" includes="${classpath.local.include}" />
-        <fileset dir="${classpath.libraries.location}" includes="**/*.jar" />
-        <fileset dir="${project.lib}" includes="**/*.jar" />
-    </path>
-	
-	<path id="junit">
-		<pathelement path="resources/code/junit/junit-4.11.jar" />
-		<pathelement path="resources/code/junit/hamcrest-core-1.3.jar" />
-	</path>
-
-    <!-- Create the time stamp -->
-    <tstamp> 
-        <format property="date" pattern="MM/dd/yyyy" offset="0" unit="hour"/>
-    </tstamp>
-    
-    
-    
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        MAIN TARGETS
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-    <!-- delete all build files -->
-    <target name="clean">
-        <delete dir="${project.bin}"/>
-        <delete dir="${project.tmp}"/>
-    </target>
-	
-    <!-- build the library. installs it to sketchbook location -->
-    <target name="build">
-		<condition property="is.normal">
-			<and>
-				<equals arg1="${project.compile}" arg2="normal" /> <!-- project.compile is set to normal -->
-				<isfalse value="${fast}" /> <!-- fast parameter either not given or not "yes", "true" or "on" -->
-			</and>
-		</condition>
-	
-        <echo level="info">
-${line}
-Building ${project.name} v${library.fullVersion}
-${line}
-src path        ${project.src}
-bin path        ${project.bin}
-classpath.local	${classpath.local.location}
-sketchbook      ${sketchbook.location}
-java version    ${java.target.version}
-${line}
-        </echo>
-        <mkdir dir="${project.bin}"/>
-        
-        <echo level="info" message="building library ..." />
-        <antcall target="generate.structure">
-            <param name="folder" value="library"/>
-        </antcall>
-        <antcall target="generate.source" />
-        <antcall target="compile" />
-        <antcall target="generate.jar">
-            <param name="folder" value="library"/>
-        </antcall>
-        <antcall target="generate.javadoc" />
-        <antcall target="util.install">
-            <param name="folder" value="libraries"/>
-        </antcall>
-        <antcall target="generate.libprops" />
-        <antcall target="generate.distribution" />
-        <antcall target="generate.install.library" />
-        <antcall target="generate.web" />
-        <antcall target="generate.zip" />
-        <delete dir="${project.tmp}" />
-        <antcall target="util.incrementBuildNo" />
-		
-		<condition property="compile.type" value="normal" else="fast">
-			<istrue value="${is.normal}" />
-		</condition>
-        <echo level="info">
-${line}
-Name        ${project.name} 
-Version     ${library.fullVersion}
-Compiled    ${compile.type}
-Sketchbook  ${sketchbook.location}
-${line}
-DONE.
-${line}
-        </echo>
-    </target>
-	
-	<!-- build project in fast mode (excludes javadocs and web files) -->
-	<target name="build-fast">
-		<antcall target="build">
-			<param name="fast" value="true" />
-		</antcall>
-	</target>
-    
-	<!-- build unit tests -->
-	<target name="build-tests" depends="build-fast">
-		<mkdir dir="${project.bin.test}"/>
-		<javac srcdir="${project.test}" destdir="${project.bin.test}" source="${java.target.version}" target="${java.target.version}" includeantruntime="false">
-            <classpath>
-                <path refid="classpath"/>
-				<path refid="junit"/>
-            </classpath>
-            <compilerarg value="-Xlint"/>
-        </javac>
-	</target>
-	
-    <target name="compile">
-        <javac srcdir="${project.tmp}/${project.name}/src" destdir="${project.bin}" source="${java.target.version}" target="${java.target.version}" includeantruntime="false">
-            <classpath>
-                <path refid="classpath"/>
-            </classpath>
-            <compilerarg value="-Xlint"/>
-        </javac>
-        <copy todir="${project.bin.data}">
-            <fileset dir="${project.data}" excludes="README" />
-        </copy>
-    </target>
-    
-	<!-- build and run processing -->
-    <target name="run" depends="build-fast">
-		<echo level="info">Running Processing...</echo>
-        <exec executable="${processing.executable}" spawn="false" />
-    </target>
-    
-	<!-- run all unit tests -->
-	<target name="test" depends="build-tests">
-		<junit printsummary="on">
-			<batchtest >
-				<fileset dir="${project.test}" />
-			</batchtest>
-			<formatter type="plain" usefile="false" /> <!-- it seems a formatter is needed to properly run tests -->
-			<classpath>
-				<path refid="classpath"/>
-				<path refid="junit"/>
-				<pathelement path="${project.bin}:${project.bin}/${project.test}" />
-			</classpath>
-		</junit>
-	</target>
-	
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        GENERATORS
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-    <target name="generate.structure">
-        <delete dir="${project.tmp}" />
-        <mkdir dir="${project.tmp}" />
-        <mkdir dir="${project.tmp}/${project.name}" />
-        <mkdir dir="${project.tmp}/${project.name}/${folder}" />
-        <mkdir dir="${project.tmp}/${project.name}/examples" />
-        <mkdir dir="${project.tmp}/${project.name}/reference" />
-        <mkdir dir="${project.tmp}/${project.name}/src" />
-        <copy todir="${project.tmp}/${project.name}/examples">
-            <fileset dir="${project.examples}">
-                <exclude name="**/*README*"/>
-            </fileset>
-        </copy>
-        <copy todir="${project.tmp}/${project.name}/src">
-            <fileset dir="${project.src}"/>
-        </copy>
-        <copy todir="${project.tmp}/${project.name}/${folder}">
-            <fileset dir="${project.lib}" excludes="README" />
-        </copy>
-    </target>
-    
-    <target name="generate.source" if="is.normal">
-        <antcall target="generate.source.win"/>
-        <antcall target="generate.source.nix"/>
-    </target>
-    
-    <!-- These two targets are pretty much the same, except for the delimiter (can't find a better way of doing this) -->
-    <target name="generate.source.win" if="is.windows">
-        <echo level="info" message="generating source (windows) ..."/>
-        <path id="src.contents">
-            <fileset dir="${project.tmp}/${project.name}/src" includes="**/*.java" />
-        </path>
-        <property name="src.list" refid="src.contents" />
-        <foreach list="${src.list}" param="file" target="util.parseFile" delimiter=";" />
-    </target>
-    
-    <target name="generate.source.nix" unless="is.windows">
-        <echo level="info" message="generating source (mac/linux) ..."/>
-        <path id="src.contents">
-            <fileset dir="${project.tmp}/${project.name}/src" includes="**/*.java" />
-        </path>
-        <property name="src.list" refid="src.contents" />
-        <foreach list="${src.list}" param="file" target="util.parseFile" delimiter=":" />
-    </target>
-        
-    <target name="generate.jar">
-        <jar jarfile="${project.tmp}/${project.name}/${folder}/${project.jar.name}" basedir="${project.bin}"/>
-    </target>
-    
-    <target name="generate.javadoc" if="is.normal">
-        <!-- create the java reference of the library -->
-        <javadoc bottom="Processing library ${project.name} by ${author.name}. ${library.copyright}" 
-                         classpath="${classpath.local.location}/core.jar;{project.bin}" 
-                         destdir="${project.tmp}/${project.name}/reference" 
-                         verbose="false" 
-                         stylesheetfile="resources/stylesheet.css" 
-                         doctitle="Javadocs: ${project.name}" 
-                         public="true" version="false" 
-                         windowtitle="Javadocs: ${project.name}"
-						doclet="ExcludeDoclet" docletpath="./resources/code">
-            <classpath>
-                <path refid="classpath"/>
-            </classpath>
-            <link href="${javadoc.java.href}" />
-            <link href="${javadoc.processing.href}" />
-            <taglet name="ExampleTaglet" path="./resources/code" />
-            <fileset dir="${project.tmp}/${project.name}/src" defaultexcludes="yes">
-                <!-- add packages to be added to reference. -->
-                <include name="**/*"/>
-				<exclude name="com/martinleopold/pui/events/*" /> <!-- exclude event package -->
-            </fileset>
-        </javadoc>
-    </target>
-    
-    <target name="generate.libprops" if="is.normal">
-        <property name="libprops.destination" location="${project.tmp}/${project.name}/library.properties"/>
-        <copy file="${libprops.source}" tofile="${libprops.destination}" />
-        <antcall target="util.parseFile">
-            <param name="file" value="${libprops.destination}"/>
-        </antcall>
-    </target>
-    
-    <target name="generate.distribution" if="is.normal">
-        <mkdir dir="${project.dist}"/>
-        <delete dir="${project.dist.version}"/>
-        <mkdir dir="${project.dist.version}" />
-        <mkdir dir="${project.dist.version}/${project.name}" />
-        <move file="${project.tmp}/${project.name}" toDir="${project.dist.version}" />
-    </target>
-    
-    <target name="generate.install.library" if="is.normal">	
-        <copy file="${install.source}" tofile="${project.dist.version}/INSTALL.txt" />
-		
-        <antcall target="util.parseFile">
-            <param name="file" value="${install.destination}"/>
-        </antcall>
-    </target>
-    
-    <target name="generate.web" if="is.normal">
-        <mkdir dir="${project.dist.version}/web" />
-        <copy todir="${project.dist.version}/web/reference">
-            <fileset dir="${project.dist.version}/${project.name}/reference" />
-        </copy>
-  	
-        <copy todir="${project.dist.version}/web/examples">
-            <fileset dir="${project.dist.version}/${project.name}/examples" />
-        </copy>
-	  	
-        <copy todir="${project.dist.version}/web">
-            <fileset dir="${project.web}" />
-        </copy>
-	  	
-        <antcall target="util.parseFile">
-            <param name="file" value="${project.dist.version}/web/index.html"/>
-        </antcall>
-		
-        <antcall target="util.processExamples" />
-		
-        <replaceregexp file="${project.dist.version}/web/index.html" match="##examples##" replace="" flags="g" />
-    </target>
-    
-    <target name="generate.zip" if="is.normal">
-        <!-- zip the distribution of the library -->
-		
-        <move todir="${project.dist.version}/tmp/${project.name}">
-            <fileset dir="${project.dist.version}/${project.name}" />
-        </move>
-  		
-        <copy file="${project.dist.version}/tmp/${project.name}/library.properties" tofile="${project.dist.version}/web/download/${project.name}.txt" />
-		        
-        <zip destfile="${project.dist.version}/${project.name}.zip"
-                     basedir="${project.dist.version}/tmp"
-                     excludes="**/.DS_Store"
-        />
-		
-        <move file="${project.dist.version}/${project.name}.zip" todir="${project.dist.version}/web/download" />
-		
-        <copy file="${project.dist.version}/web/download/${project.name}.zip" tofile="${project.dist.version}/web/download/${project.name}-${library.version}.zip" />
-        <copy file="${project.dist.version}/web/download/${project.name}.txt" tofile="${project.dist.version}/web/download/${project.name}-${library.version}.txt" />
-		
-		<!-- also copy zip to dist root (for upload to repo -->
-		<delete><fileset dir="${project.dist}" includes="*.zip"/></delete>
-		<copy file="${project.dist.version}/web/download/${project.name}.zip" tofile="${project.dist}/${project.name}-${library.version}.zip" />
-		
-        <move todir="${project.dist.version}">
-            <fileset dir="${project.dist.version}/web" />
-        </move>
-		
-        <delete dir="${project.dist.version}/tmp" />
-    </target>
-    
-    
-    
-    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        UTILS
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-    
-    <!-- increment build.number in build.number file -->
-    <target name="util.incrementBuildNo">
-        <propertyfile file="./resources/build.number">
-            <entry key="build.number" type="int" default="1" operation="+" value="1" />
-        </propertyfile>
-    </target>
-    
-    <!-- install library to sketchbook -->
-    <target name="util.install">
-        <echo level="info" message="copying files to the ${folder} folder in your sketchbook." />
-        <!-- copy the jar file to processing's sketchbook libraries folder -->
-        <delete dir="${sketchbook.location}/${folder}/${project.name}" />
-        <mkdir dir="${sketchbook.location}/${folder}/${project.name}" />
-        <copy todir="${sketchbook.location}/${folder}/${project.name}">
-            <fileset dir="${project.tmp}/${project.name}"/>
-        </copy> 
-    </target>
-    
-    <!-- find and replace ##placeholder## keywords in a file -->
-    <target name="util.parseFile">
-        <echo level="info" message="${file}" />
-        
-        <replaceregexp file="${file}" match="##date##" replace="${date}" flags="g" />
-        <replaceregexp file="${file}" match="##copyright##" replace="${library.copyright}" flags="g" />
-        
-        <replaceregexp file="${file}" match="##author##" replace="${author.name} ${author.url}" flags="g" />
-        <replaceregexp file="${file}" match="##author.name##" replace="${author.name}" flags="g" />
-        <replaceregexp file="${file}" match="##author.url##" replace="${author.url}" flags="g" />
-    	        
-        <replaceregexp file="${file}" match="##library.name##" replace="${project.name}" flags="g" />
-        <replaceregexp file="${file}" match="##project.name##" replace="${project.name}" flags="g" />
-    	        
-        <replaceregexp file="${file}" match="##library.version##" replace="${library.version}" flags="g" />
-        <replaceregexp file="${file}" match="##library.prettyVersion##" replace="${library.prettyVersion}" flags="g" /> 
-        <replaceregexp file="${file}" match="##library.fullVersion##" replace="${library.fullVersion}" flags="g" /> 
-        
-        <replaceregexp file="${file}" match="##library.url##" replace="${library.url}" flags="g" />
-        <replaceregexp file="${file}" match="##library.category##" replace="${library.category}" flags="g" />
-        <replaceregexp file="${file}" match="##library.sentence##" replace="${library.sentence}" flags="g" />
-        <replaceregexp file="${file}" match="##library.paragraph##" replace="${library.paragraph}" flags="g" />
-        <replaceregexp file="${file}" match="##library.keywords##" replace="${library.keywords}" flags="g" />
-        <replaceregexp file="${file}" match="##library.dependencies##" replace="${library.dependencies}" flags="g" />
-    	
-        <replaceregexp file="${file}" match="##source.host##" replace="${source.host}" flags="g" />
-        <replaceregexp file="${file}" match="##source.url##" replace="${source.url}" flags="g" />
-        <replaceregexp file="${file}" match="##source.repository##" replace="${source.repository}" flags="g" />
-    	
-        <replaceregexp file="${file}" match="##tested.platform##" replace="${tested.platform}" flags="g" />
-        <replaceregexp file="${file}" match="##tested.processingVersion##" replace="${tested.processingVersion}" flags="g" />
-    </target>
-    
-     <!-- parsing the examples folder -->
-    <target name="util.processExamples">
-        <dirset id="examples.contents" dir="${project.examples}" excludes="*/*"/>
-        <property name="examples.list" refid="examples.contents"/>
-        <foreach list="${examples.list}" target="util.addExamples" param="exampleDir" delimiter=";">
-        </foreach>
-    </target>
-    
-    <target name="util.addExamples">
-        <echo level="info">${exampleDir}</echo>
-        <propertyregex property="pde"
-                       input="${exampleDir}"
-                       regexp="^.*\/(.*)$"
-                       select="\1"
-                       casesensitive="false"
-                       defaultValue="${exampleDir}" />
-
-        <propertyregex property="data"
-                         input="${exampleDir}"
-                         regexp="data$"
-                         select="true"
-                         casesensitive="false"
-                         defaultValue="false" />
-
-        <if>
-            <equals arg1="${data}" arg2="false" />
-            <then>
-                <replaceregexp file="${project.dist.version}/web/index.html"
-                                 match="(##examples##)"
-                                 replace="&lt;li&gt;&lt;a href=&quot;examples/${exampleDir}/${pde}.pde&quot;&gt;${exampleDir}&lt;/a&gt;&lt;/li&gt; \1"
-                                 flags="g" />
-            </then>
-            <else>
-                <echo level="info" message="Data folder, attention." />
-            </else>
-        </if>
-    </target>
-    
 </project>

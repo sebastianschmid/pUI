@@ -19,6 +19,7 @@ package com.martinleopold.pui;
 
 import com.martinleopold.pui.events.Event;
 import com.martinleopold.pui.events.Events;
+
 import processing.core.PApplet;
 
 /**
@@ -33,7 +34,14 @@ public class Slider extends WidgetWithLabel<Slider> {
 	
 	// helpers
 	boolean sliding = false;
-			
+	
+	static float DEFAULT_SLIDER_W = 11;
+	static float DEFAULT_SLIDER_H = 2;
+	
+	public Slider(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_SLIDER_W), pui.gridY2Px(DEFAULT_SLIDER_H));
+	}
+	
 	public Slider(PUI pui, int width, int height) {
 		super(pui, width, height);
 	}

@@ -72,7 +72,7 @@ import processing.event.MouseEvent;
 		layoutRect = new Rect(this);
 		
 		this.pui = pui;
-		pui.add(this, doLayout);
+//		pui.add(this, doLayout);
 		
 		theme = pui.theme;
 		font = pui.font;
@@ -219,11 +219,12 @@ import processing.event.MouseEvent;
 	 */
 	
 	// in px
-	void setPosition(int x, int y) {
+	Widget<T> setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
 		layoutRect.x = x;
 		layoutRect.y = y;
+		return this;
 	}
 	
 	// in px

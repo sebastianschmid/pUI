@@ -96,11 +96,12 @@ abstract class WidgetWithLabel<T extends WidgetWithLabel<T>> extends Widget<T> {
 	}
 	
 	@Override
-	void setPosition(int x, int y) {
+	Widget<T> setPosition(int x, int y) {
 		super.setPosition(x, y);
 		if (label != null) { // TODO label might not be initialized, since the constructor causes a layout, which sets the position
 			label.setPosition(x, y+height); // label needs to be replaced
 		}
+		return this;
 	}
 	
 	@Override

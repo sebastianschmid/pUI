@@ -26,10 +26,18 @@ import processing.core.PApplet;
  */
 public class Divider extends Widget<Divider> {
 
+	static float DEFAULT_DIVIDER_W = 11;
+	static float DEFAULT_DIVIDER_H = 0;
+
+	public Divider(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_DIVIDER_W), pui.gridY2Px(DEFAULT_DIVIDER_H));
+	}
+	
 	public Divider(PUI pui, int width, int height) {
 		super(pui, width, height);
 	}
-	
+
+
 	@Override
 	void draw(PApplet p) {
 		// draw background

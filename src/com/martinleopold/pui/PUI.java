@@ -26,6 +26,9 @@
 package com.martinleopold.pui;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Vector;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.event.KeyEvent;
@@ -48,7 +51,7 @@ public final class PUI extends Rect {
 	// myParent is a reference to the parent sketch
 	PApplet p;
 
-	ArrayList<Widget<?>> widgets = new ArrayList<Widget<?>>(); // list of widgets managed by this PUI
+	Vector<Widget<?>> widgets = new Vector<Widget<?>>(); // list of widgets managed by this PUI
 		
 	/**
 	 * A constructor, usually called in the setup() method in your sketch to initialize and start
@@ -122,8 +125,14 @@ public final class PUI extends Rect {
 				// adjust the coordinates of the mouse event 
 			e = new MouseEvent(e.getNative(), e.getMillis(), e.getAction(), e.getModifiers(), e.getX()-x, e.getY()-y, e.getButton(), e.getCount());
 
-			for (Widget<?> w : widgets) {
-				w.onMouseEvent(e);
+			// Make copy because a MouseEvent might change the widgets array
+			Object[] copy = widgets.toArray();
+			for (Object w : copy) {
+				try {
+					((Widget<?>) w).onMouseEvent(e);
+				} catch (Exception ex) {
+					System.out.println("Exception while issuing Mouse Event");
+				}
 			}
 		}
 
@@ -191,64 +200,138 @@ public final class PUI extends Rect {
 	 *
 	 * @param e
 	 */
-	void add(Widget<?> e) {
-		add(e, true);
+	
+	public void addAll(Collection<Widget<?>> c) {
+		addAll(c, true);
 	}
 	
-	void add(Widget<?> e, boolean doLayout) {
+	public void addAll(Collection<Widget<?>> c, boolean doLayout) {
+		widgets.addAll(c);
+		layout.reLayout();
+		if ( doLayout ) {
+			for ( Widget<?> w : c) {
+				layout.add(w);
+			}
+		}
+	}
+
+	public void addAll(int index, Collection<Widget<?>> c) {
+		addAll(index, c, true);
+	}
+	
+	public void addAll(int index, Collection<Widget<?>> c, boolean doLayout) {
+		widgets.addAll(index, c);
+		layout.reLayout();
+		if ( doLayout ) {
+			for ( Widget w : c) {
+				layout.add(w);
+			}
+		}
+	}
+	
+	public Widget<?> add(Widget<?> e) {
+		add(e, true);
+		return e;
+	}
+	
+	public Widget<?> add(Widget<?> e, boolean doLayout) {
 		if (!widgets.contains(e)) {
 			widgets.add(e);
 			if (doLayout) layout.add(e);
 		}
+		return e;
+	}
+	
+	public Widget<?> add(int index, Widget<?> e) {
+		add(index, e, true);
+		return e;
+	}
+	
+	public Widget<?> add(int index, Widget<?> e, boolean doLayout) {
+		if (!widgets.contains(e)) {
+			widgets.add(index, e);
+			if (doLayout) layout.add(e);
+		}
+		return e;
 	}
 	
 	
-	static float DEFAULT_BUTTON_W = 5;
-	static float DEFAULT_BUTTON_H = 2;
+	public Widget<?> remove(Widget<?> e) {
+		widgets.remove(e);
+		layout.reLayout();
+		return e;
+	}
+	
+	public Widget<?> remove(int index) {
+		Widget<?> w = widgets.remove(index);
+		layout.reLayout();
+		return w;
+	}
+	
+	public boolean removeAll(Collection <Widget<?>> c) {
+		return removeAll(c, true);
+	}
+	
+	public boolean removeAll(Collection <Widget<?>> c, boolean removeLayout) {
+		boolean b = widgets.removeAll(c);
+		layout.reLayout();
+		if ( removeLayout ) {
+			for ( Widget w : c) {
+				layout.remove(w);
+			}
+		}
+		return b;
+	}
+	
+	
 	// return a default size button at the layout without label
 	public Button addButton() {
-		return new Button(this, gridX2Px(DEFAULT_BUTTON_W), gridY2Px(DEFAULT_BUTTON_H));
+		Button b = new Button(this); 
+		add(b);
+		return b;
 	}
 	
 //	public Button addButton(String name) {
 //		return null;
 //	}
 	
-	static float DEFAULT_TOGGLE_W = 2;
-	static float DEFAULT_TOGGLE_H = 2;
+
 	public Toggle addToggle() {
-		return new Toggle(this, gridX2Px(DEFAULT_TOGGLE_W), gridY2Px(DEFAULT_TOGGLE_H));
+		Toggle t = new Toggle(this); 
+		add(t);
+		return t;
 	}
 	
-	static float DEFAULT_SLIDER_W = 11;
-	static float DEFAULT_SLIDER_H = 2;
 	public Slider addSlider() {
-		return new Slider(this, gridX2Px(DEFAULT_SLIDER_W), gridY2Px(DEFAULT_SLIDER_H));
+		Slider s = new Slider(this);
+		add(s);
+		return s;
 	}
 	
-	static float DEFAULT_VSLIDER_W = 2;
-	static float DEFAULT_VSLIDER_H = 11;
 	public Slider addVSlider() {
-		return new VSlider(this, gridX2Px(DEFAULT_VSLIDER_W), gridY2Px(DEFAULT_VSLIDER_H));
+		VSlider s = new VSlider(this);
+		add(s);
+		return s;
 	}
 	
 	
-	static float DEFAULT_DIVIDER_W = 11;
-	static float DEFAULT_DIVIDER_H = 0;
 	public Divider addDivider() {
-		return new Divider(this, gridX2Px(DEFAULT_DIVIDER_W), gridY2Px(DEFAULT_DIVIDER_H));
+		Divider d = new Divider(this);
+		add(d);
+		return d;
 	}
 	
 	public Label addLabel(String text) {
-		Label l = new Label(this, 0, gridY2Px(DEFAULT_FONTSIZE_MEDIUM));
+		Label l = new Label(this);
 		l.text(text);
+		add(l);
 		return l;
 	}
 	
-	static float DEFAULT_COLORPICKER_W = 11;
-	static float DEFAULT_COLORPICKER_H = 4;
 	public ColorPicker addColorPicker() {
-		return new ColorPicker(this, gridX2Px(DEFAULT_COLORPICKER_W), gridY2Px(DEFAULT_COLORPICKER_H));
+		ColorPicker cp = new ColorPicker(this); 
+		add(cp);
+		return cp;
 	}
 		
 	// TODO: use name as: label, retrieval handle, default callback (method or variable)

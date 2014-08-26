@@ -24,10 +24,18 @@ import processing.core.PApplet;
  * @author martinleopold
  */
 public class VSlider extends Slider {
+	
+	static float DEFAULT_VSLIDER_W = 2;
+	static float DEFAULT_VSLIDER_H = 11;
+	
+	public VSlider(PUI pui) {
+		this(pui, pui.gridX2Px(DEFAULT_VSLIDER_W), pui.gridY2Px(DEFAULT_VSLIDER_H));
+	}
+	
 	public VSlider(PUI pui, int width, int height) {
 		super(pui, width, height);
 	}
-	
+
 	@Override
 	protected VSlider getThis() {
 		return this;
