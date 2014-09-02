@@ -55,51 +55,51 @@ final class Layout {
 //		System.out.println("width:" + width + " height:" + height + " paddingX:" + paddingX + " paddingY:" + paddingY);
 	}
 	
+	void setAndLayoutWidgets(List<Widget<?>> l) {
+		reset();
+		for ( Widget w : l) {
+			add(w);
+		}
+	}
+
 	void add(Widget<?> w) {
 //		System.out.println("adding " + elements.size());
 		Rect r = w.layoutRect;
 		
-		int totalWidth = r.width + 2*paddingX; // total widget width (including padding)
-		int totalHeight = r.height + 2*paddingY; // total widget height (including padding)
+		int outerWidth = r.width + 2*paddingX; // outer widget width (including padding)
+		int outerHeight = r.height + 2*paddingY; // outer widget height (including padding)
 		
 		// check if we flow out at the bottom
-//		System.out.println("nextX:" + nextX + " nextY: " + nextY + " totalHeight:" + totalHeight + " height: " + height);
-		if (nextY + totalHeight > height) {
+//		System.out.println("nextX:" + nextX + " nextY: " + nextY + " outerHeight:" + outerHeight + " height: " + height);
+		if (nextY + outerHeight > height) {
 //			System.out.println("try new column");
 			nextColumn();
 		}
 		
 		// check if it fits in the current line
-//		System.out.print("check line: nextX:" + nextX + "+tw:" + totalWidth + "=" + (nextX+totalWidth) + " <= ");
-//		System.out.println("currentColumnX:" + currentColumnX + "+currentColumnWidth:" + currentColumnWidth + "=" + (currentColumnX + currentColumnWidth));
-		if (nextX + totalWidth <= currentColumnX + currentColumnWidth) {
+		if (nextX + outerWidth <= currentColumnX + currentColumnWidth) {
 			// place it
 			placeNext(w);
-//			System.out.println("position: x=" + w.x + " y=" + w.y);
-			
 			placeAgainstPinned(w); // adjust position to avoid pinned elements
 			
 			elements.add(w); // add to list of layouted elements
 			actions.add(Action.AddWidget);
-//			System.out.println(elements.indexOf(w) + ": placing in layout x:" + r.x + " y:" + r.y + " tw:" + totalWidth + " th:" + totalHeight);
-			// track row height
-			if (totalHeight > currentRowHeight) {
-				currentRowHeight = totalHeight;
-//				System.out.println("currentRowHeight: " + currentRowHeight );
+			if (outerHeight > currentRowHeight) {
+				currentRowHeight = outerHeight;
 			}
 			
 			//TODO warning needs to work differently
 			// warn if we flow out to the right
-//			if (nextX + totalWidth > width) {
+//			if (nextX + outerWidth > width) {
 //				System.out.println("Warning: Widget is placed outside of the window.");
 //			}
 			
 			// widget was placed
-			nextX += totalWidth;
+			nextX += outerWidth;
 		} else if (nextX == currentColumnX) { // check if we are at the beginning of a line
 //			System.out.println("make column wider");
 			// we are at the beginning of a line and it doesn't fit
-			currentColumnWidth = totalWidth; // make this column wider
+			currentColumnWidth = outerWidth; // make this column wider
 			add(w); // try again
 		} else { // it doesn't fit in the current line
 //			System.out.println("try new row");

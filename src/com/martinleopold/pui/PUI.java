@@ -27,8 +27,7 @@ package com.martinleopold.pui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
-
+import java.util.List;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.event.KeyEvent;
@@ -51,7 +50,7 @@ public final class PUI extends Rect {
 	// myParent is a reference to the parent sketch
 	PApplet p;
 
-	Vector<Widget<?>> widgets = new Vector<Widget<?>>(); // list of widgets managed by this PUI
+	ArrayList<Widget<?>> widgets = new ArrayList<>(); // list of widgets managed by this PUI
 		
 	/**
 	 * A constructor, usually called in the setup() method in your sketch to initialize and start
@@ -215,18 +214,13 @@ public final class PUI extends Rect {
 		}
 	}
 
-	public void addAll(int index, Collection<Widget<?>> c) {
-		addAll(index, c, true);
-	}
-	
-	public void addAll(int index, Collection<Widget<?>> c, boolean doLayout) {
-		widgets.addAll(index, c);
-		layout.reLayout();
-		if ( doLayout ) {
-			for ( Widget w : c) {
-				layout.add(w);
-			}
-		}
+	public void addAll(int index, List<Widget<?>> l) {
+//		addAll(index, l, true);
+//	}
+//	
+//	public void addAll(int index, List<Widget<?>> l, boolean doLayout) {
+		widgets.addAll(index, l);
+		layout.setAndLayoutWidgets(widgets);
 	}
 	
 	public Widget<?> add(Widget<?> e) {
@@ -242,44 +236,38 @@ public final class PUI extends Rect {
 		return e;
 	}
 	
-	public Widget<?> add(int index, Widget<?> e) {
-		add(index, e, true);
-		return e;
-	}
-	
-	public Widget<?> add(int index, Widget<?> e, boolean doLayout) {
-		if (!widgets.contains(e)) {
-			widgets.add(index, e);
-			if (doLayout) layout.add(e);
-		}
-		return e;
+	public Widget<?> add(int index, Widget<?> w) {
+		widgets.add(index, w);
+		layout.setAndLayoutWidgets(widgets);
+		return w;
 	}
 	
 	
 	public Widget<?> remove(Widget<?> e) {
 		widgets.remove(e);
-		layout.reLayout();
+		layout.setAndLayoutWidgets(widgets);
 		return e;
 	}
 	
 	public Widget<?> remove(int index) {
 		Widget<?> w = widgets.remove(index);
-		layout.reLayout();
+		layout.setAndLayoutWidgets(widgets);
 		return w;
 	}
 	
-	public boolean removeAll(Collection <Widget<?>> c) {
-		return removeAll(c, true);
-	}
-	
-	public boolean removeAll(Collection <Widget<?>> c, boolean removeLayout) {
-		boolean b = widgets.removeAll(c);
-		layout.reLayout();
-		if ( removeLayout ) {
-			for ( Widget w : c) {
-				layout.remove(w);
-			}
-		}
+	public boolean removeAll(List <Widget<?>> l) {
+//		return removeAll(l, true);
+//	}
+//	
+//	public boolean removeAll(List <Widget<?>> l, boolean removeLayout) {
+		boolean b = widgets.removeAll(l);
+		layout.setAndLayoutWidgets(widgets);		
+//		layout.reLayout();
+//		if ( removeLayout ) {
+//			for ( Widget w : l) {
+//				layout.remove(w);
+//			}
+//		}
 		return b;
 	}
 	

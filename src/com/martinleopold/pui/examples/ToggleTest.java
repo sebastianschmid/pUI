@@ -35,6 +35,14 @@ public class ToggleTest extends PApplet {
 		  ui.addLabel("Sliders");
 		  s = ui.addSlider().label("s1").calls("sliderValue").max(100);
 		  ui.addSlider().label("s2").sets("s2Value");
+		  Slider pinnedSlider;
+		  pinnedSlider = new Slider(ui);
+		  // pinnedSlider.position(100, 100).value(50);
+		  pinnedSlider.label("pinned");
+		  pinnedSlider.position(130, 350);
+		  ui.add(pinnedSlider, false);
+		  ui.addSlider().label("s5");
+		  ui.addSlider().label("s3");
 		  ui.addDivider();
 		  
 		  ui.addLabel("VSliders"); ui.newRow();
