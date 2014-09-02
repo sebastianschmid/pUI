@@ -64,6 +64,16 @@ final class Layout {
 
 	void add(Widget<?> w) {
 //		System.out.println("adding " + elements.size());
+		if ( w instanceof FlowControl ) {
+			FlowControl f = (FlowControl)w;
+			int t = f.getType();
+			if ( FlowControl.LINEBREAK == t ) {
+				newRow();
+			} else if ( FlowControl.COLUMNBREAK == t ) {
+				newColumn();
+			}
+			return; // consume Widget without adding it to layout
+		}
 		Rect r = w.layoutRect;
 		
 		int outerWidth = r.width + 2*paddingX; // outer widget width (including padding)

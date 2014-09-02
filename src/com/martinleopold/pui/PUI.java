@@ -548,12 +548,17 @@ public final class PUI extends Rect {
 		this.layout = l;
 	}
 	
+
 	public PUI newRow() {
+		FlowControl f = new FlowControl(this, FlowControl.LINEBREAK);
+		widgets.add(f); // directly put into widgets list, don't call ui.add()...
 		layout.newRow();
 		return this;
 	}
 	
 	public PUI newColumn() {
+		FlowControl f = new FlowControl(this, FlowControl.LINEBREAK);
+		widgets.add(f);
 		layout.newColumn();
 		return this;
 	}
