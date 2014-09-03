@@ -557,7 +557,7 @@ public final class PUI extends Rect {
 	}
 	
 	public PUI newColumn() {
-		FlowControl f = new FlowControl(this, FlowControl.LINEBREAK);
+		FlowControl f = new FlowControl(this, FlowControl.COLUMNBREAK);
 		widgets.add(f);
 		layout.newColumn();
 		return this;
