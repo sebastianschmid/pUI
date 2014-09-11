@@ -1,15 +1,14 @@
 package com.martinleopold.pui.examples;
 
-import com.martinleopold.pui.*;
-import java.util.ArrayList;
 import java.util.Vector;
+import com.martinleopold.pui.*;
 
 import processing.core.*;
 
 public class ToggleTest extends PApplet {
 	PUI ui;
 	Slider s;
-	ArrayList<Widget<?>> group1;
+	Vector<Widget<?>> group1;
 	
 	boolean group1active = false;
 
@@ -21,11 +20,10 @@ public class ToggleTest extends PApplet {
 		  ui = PUI.init(this).size(300, height);
 		  ui.font("NewMedia Fett.ttf"); // set font
 		  
-		  group1 = new ArrayList<Widget<?>>();
+		  group1 = new Vector<Widget<?>>();
 		  group1.add( new Label(ui, "Toggle Menu Test"));
 		  group1.add( new Slider(ui) );
 		  group1.add( new Button(ui) );
-		  group1.add( new FlowControl(ui, FlowControl.LINEBREAK));
 		  
 		  
 		  ui.addLabel("Toggles");
@@ -37,14 +35,6 @@ public class ToggleTest extends PApplet {
 		  ui.addLabel("Sliders");
 		  s = ui.addSlider().label("s1").calls("sliderValue").max(100);
 		  ui.addSlider().label("s2").sets("s2Value");
-//		  Slider pinnedSlider;
-//		  pinnedSlider = new Slider(ui);
-		  // pinnedSlider.position(100, 100).value(50);
-//		  pinnedSlider.label("pinned");
-//		  pinnedSlider.position(130, 350);
-//		  ui.add(pinnedSlider, false);
-		  ui.addSlider().label("s5");
-		  ui.addSlider().label("s3");
 		  ui.addDivider();
 		  
 		  ui.addLabel("VSliders"); ui.newRow();
@@ -89,8 +79,8 @@ public class ToggleTest extends PApplet {
 			line(mouseX, mouseY, pmouseX, pmouseY);
 		}
 	}
-        
-        public static void main(String[] args) {
-                PApplet.main(new String[] { "com.martinleopold.pui.examples.ToggleTest" });
-        }
+	
+	public static void main(String[] args) {
+		PApplet.main(new String[] { "com.martinleopold.pui.examples.ToggleTest" });
+	}
 }

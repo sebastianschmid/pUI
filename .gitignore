@@ -14,8 +14,8 @@ Thumbs.db
 
 
 # allow zipped distributions
-/dist/*
-!/dist/*.jar
-!/dist/*.zip
+/distribution/*
+!/distribution/*.jar
+!/distribution/*.zip
 !/tmp/pUI/src/com/martinleopold/pui/Widget.java
 /build/
